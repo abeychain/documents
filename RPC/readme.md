@@ -1,6 +1,6 @@
 # go-abey rpc interface 
 
 
-[Management API](RPC/Management-API.md)
+[Management API](Management-API.md)
 
-[JSON RPC API](RPC/json-rpc.md)
+[JSON RPC API](json-rpc.md)
