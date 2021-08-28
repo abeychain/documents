@@ -1,7 +1,7 @@
 # go-abey staking
 
-[Staking-Guide](DPOS/Staking-Guide.md)
+[Staking-Guide](Staking-Guide.md)
 
-[Staking-Contract](DPOS/Staking-Contract.md)
+[Staking-Contract](Staking-Contract.md)
 
-[Staking-ABI](DPOS/Staking-ABI.md)
+[Staking-ABI](Staking-ABI.md)

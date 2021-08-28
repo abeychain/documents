@@ -1,9 +1,9 @@
 # go-abey usage
 
-[Account-Address](Usage/Account-Address.md)
+[Account-Address](Account-Address.md)
 
-[Managing-your-accounts](Usage/Managing-your-accounts.md)
+[Managing-your-accounts](Managing-your-accounts.md)
 
-[Command-Line-Options](Usage/Command-Line-Options.md)
+[Command-Line-Options](Command-Line-Options.md)
 
-[Backup-Restore](Usage/Backup-&-restore.md)
+[Backup-Restore](Backup-&-restore.md)
