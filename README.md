@@ -5,7 +5,7 @@ Welcome to the go-abey wiki!
 Main entry points:
 
 * [Installation Instructions](Installation/Building-abeychain.md)
-* [JSON RPC/Management API](RPC/readme.md)
+* [JSON RPC/Management API](RPC)
 * [Usage](Usage/readme.md)
 * [DPOS](DPOS/readme.md)
 
