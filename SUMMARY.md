@@ -8,7 +8,8 @@
 
 ## RPC
 
-* [RPC](RPC/readme.md)
+* [Management API](RPC/Management-API.md)
+* [JSON RPC API](RPC/json-rpc.md)
 
 ## Usage
 
