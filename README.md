@@ -1,4 +1,4 @@
-# Initial page
+# ABEYChain Development Documents
 
 Welcome to the go-abey wiki!
 ***
