@@ -3,11 +3,14 @@
 Welcome to the go-abey wiki!
 ***
 Main net 
-* IP : https://rpc.abeychain.com/ 
+* RPC : https://rpc.abeychain.com/ 
 * Chain ID : 179
+* Explorer: https://scan.abeychain.com
 ***
 Test net 
-* IP : http://18.138.171.105:8545
+* RPC : https://testrpc.abeychain.com
 * Chain ID : 178
+* Explorer: https://testnet-explorer.abeychain.com
+* Faucet: https://testnet-faucet.abeychain.com
 ***
 
