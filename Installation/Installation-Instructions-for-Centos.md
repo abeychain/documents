@@ -18,7 +18,7 @@ yum install -y build-essential
 Finally, build the `gabey` program using the following command.
 ```shell
 cd go-abey
-git checkout release/2.0
+git checkout release3.0
 make gabey
 ```
 
