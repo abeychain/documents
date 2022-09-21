@@ -21,7 +21,7 @@ sudo apt-get install -y build-essential
 Checkout the lasted release branch: 
 ```shell
 cd go-abey
-git checkout release/2.0
+git checkout release3.0
 ```
 
 Finally, build the `gabey` program using the following command.
