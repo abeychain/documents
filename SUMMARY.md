@@ -18,10 +18,10 @@
 
 ## Usage
 
-* [Account-Address](Usage/Account-Address.md)
 * [Managing-your-accounts](Usage/Managing-your-accounts.md)
 * [Command-Line-Options](Usage/Command-Line-Options.md)
 * [Backup-Restore](Usage/Backup-&-restore.md)
+* [Integrate with an Exchange](Usage/Integrate-Exchange.md)
 
 
 ## DPOS
@@ -29,3 +29,6 @@
 * [Staking-Guide](DPOS/Staking-Guide.md)
 * [Staking-Contract](DPOS/Staking-Contract.md)
 * [Staking-ABI](DPOS/Staking-ABI.md)
+
+## Scan API
+* [API](API/api.md)
