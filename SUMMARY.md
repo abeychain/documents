@@ -18,17 +18,17 @@
 
 ## Usage
 
-* [Managing-your-accounts](Usage/Managing-your-accounts.md)
-* [Command-Line-Options](Usage/Command-Line-Options.md)
-* [Backup-Restore](Usage/Backup-&-restore.md)
-* [Integrate with an Exchange](Usage/Integrate-Exchange.md)
+* [Managing your accounts](Usage/Managing-your-accounts.md)
+* [Command line options](Usage/Command-Line-Options.md)
+* [Backup & restore](Usage/Backup-&-restore.md)
+* [Integrating an exchange](Usage/Integrate-Exchange.md)
 
 
 ## DPOS
 
-* [Staking-Guide](DPOS/Staking-Guide.md)
-* [Staking-Contract](DPOS/Staking-Contract.md)
-* [Staking-ABI](DPOS/Staking-ABI.md)
+* [Staking guide](DPOS/Staking-Guide.md)
+* [Staking contract](DPOS/Staking-Contract.md)
+* [Staking ABI](DPOS/Staking-ABI.md)
 
 ## Scan API
-* [API](API/api.md)
+* [Scan API](API/api.md)
