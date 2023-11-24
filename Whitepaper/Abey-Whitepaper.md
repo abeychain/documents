@@ -125,6 +125,7 @@ When the primary shard receives a batch of txns from a shard, it will check if i
 There are still many optimization spaces. One certain con is that the confirmation time in this design is not instant. 
 
 **4. SMART CONTRACTS IN VIRTUAL MACHINES**
+
 **4.1. Design Rationale.** Since ours is a hybrid model, we’ll take the liberty of exploring this design space a little bit further. Let us consider the possibility of a hybrid cloud ecosystem. 
 
    A basic problem people have faced is the kind of crude mathematical notations followed in Ethereum’s Yellow Paper12. We therefore hope to follow something like KEVM Jello Paper13 to list out the EVM and AVM (described in 4.2) specifications.  
