@@ -16,21 +16,29 @@ In this paper, we propose Abey 3.0, a PoS Protocol in which validators archive c
 
 The core strength of this proposal lies in the recognition of the theorems of DPoS, using DailyBFT as committee members allow for the rotating committee feature which provides for better fairness on the consensus-validating peers. 
 
-**2.1. Related Works.** In PoS systems, the native token stores value and voting power rather than just value as in PoW systems. PoS protocol achieves Sybil resistance in a BFT way while consuming a fraction of the energy. Rather than relying on computers racing to generate the appropriate hash, the act of locking up tokens, or staking, determines participation in a PoS protocol. This mechanism attempts to reduce the computational cost of PoW schemes by selecting validators in proportion to their quantity of staked holdings. PoS-based blockchains come with notable benefits and considerations that differ from PoW.
+**2.1. Related Works** 
+
+In PoS systems, the native token stores value and voting power rather than just value as in PoW systems. PoS protocol achieves Sybil resistance in a BFT way while consuming a fraction of the energy. Rather than relying on computers racing to generate the appropriate hash, the act of locking up tokens, or staking, determines participation in a PoS protocol. This mechanism attempts to reduce the computational cost of PoW schemes by selecting validators in proportion to their quantity of staked holdings. PoS-based blockchains come with notable benefits and considerations that differ from PoW.
 
 **3. CONSENSUS**
 
 Our consensus design is a PoS consensus, with several modifications and improvements in order to tailor the application scenarios that we focus on. In this section, we will assume the readers are familiar with the details of the PoS consensus protocol.  
 
-**3.1. Design Overview.** In this subsection, we will present an overview of our consensus protocol. This protocol uses the same abstract symbols and definitions in Hybrid Consensus[5]. 
+**3.1. Design Overview** 
+
+In this subsection, we will present an overview of our consensus protocol. This protocol uses the same abstract symbols and definitions in Hybrid Consensus[5]. 
 
 Our adversary model follows the assumptions in[6] where adversaries are allowed to mildly adaptively corrupt any node, while corruptions do not take effect immediately. In future updates, we will formally explain our modifications in the Universal Composability model[7]. 
 
 Note that all the pseudocodes in this paper are simplified. They are not optimized for engineering.
 
-**3.2 Recap of DPoS Consensus Protocol.** In this subsection, we articulate major components and definitions from the Abey 3.0 PoS consensus protocol. 
+**3.2. Recap of DPoS Consensus Protocol** 
 
-**3.2.1 Daily offchain consensus protocol.** In DailyBFT, committee members run an offchain BFT instance to decide a daily log, whereas non-members count signatures from committee members.
+In this subsection, we articulate major components and definitions from the Abey 3.0 PoS consensus protocol. 
+
+**3.2.1 Daily offchain Consensus Protocol** 
+
+In DailyBFT, committee members run an offchain BFT instance to decide a daily log, whereas non-members count signatures from committee members.
 
 It extends security to committee non-members and late-spawning nodes. It carries a termination agreement that requires all honest nodes to agree on the same final log upon termination. In DailyBFT, committee members output signed daily log hashes, which are then consumed by the PoS Consensus protocol. These signed daily log hashes satisfy completeness and unforgeability.
 
@@ -42,15 +50,25 @@ Here is how the subprotocol works for when the node is **not a BFT member: -** O
 
 The signing algorithm tags each message for the inner BFT instance with the prefix “0”, and each message for the outer DailyBFT with the prefix “1” to avoid namespace collision. 
 
-**3.2.2. The mempool subprotocol.** Initializes TXs with 0 and keeps track of incoming transactions with a Union set. On receiving a propose call, it adds the transactions to the block and communicates with a gossip protocol. It also supports query methods to return confirmed transactions. By keeping track of transactions in a set, it purges the ones already confirmed. 
+**3.2.2. The mempool subprotocol** 
 
-**3.2.3. Main Consensus protocol.** A newly spawned node with an implicit message routing that carries with it the history of the transcripts sent and received. This interacts with the following components - Mempools, Preprocess, Daily Offchain Consensus, and on-chain validation.
-   
-**3.3. Variant Day Length and Committee Election.** BFT committee instances are switched after a fixed period of time (with the chain as a logical clock)[8]. A new committee is formed simply by the miners of the latest csize number of blocks inside SlowChain. In our consensus design, we want to exploit the intuition that, if the committee behaves well, we don’t have to force them to switch, and therefore the overhead of switching committees could be prevented in some situations. On the other hand, this will raise the difficulty for new nodes to get elected as committee members if the previous committee keeps good records. Therefore, we still keep the design of forcibly switching the committee every fixed amount of time, but with a much lower frequency, (for example, the committee will be switched every *K* days). On the other hand, we incorporate the idea of authenticated complaints from Thunderella[9] where the SlowChain can be used as evidence of misbehavior by BFT committee members. That is, whenever committee misbehavior is detected from the SlowChain, the next day's starting point (not necessarily the *K*-th day) will trigger a forced switch.
-   
-**3.4. Application-Specific Design.** Our consensus design is aware of application-specific requirements and tailors to them, under the conditions that the consistency, liveness, and security properties are not compromised. 
+Initializes TXs with 0 and keeps track of incoming transactions with a Union set. On receiving a propose call, it adds the transactions to the block and communicates with a gossip protocol. It also supports query methods to return confirmed transactions. By keeping track of transactions in a set, it purges the ones already confirmed. 
 
-**3.4.1. Physical Timing Restriction.** Conventional consensus design by default allows miners /committee members/leaders to re-order transactions within a small timing window. This raises a problem for some decentralized applications such as commercial exchanges where the trading fairness requires the timing order between transactions to be carefully preserved, or otherwise malicious (or, even normal rational) participants will have the incentive to re-order transactions, or even insert their own transactions, to gain extra profits. And this incentive will be magnified under high throughput. 
+**3.2.3. Main Consensus protocol** 
+
+A newly spawned node with an implicit message routing that carries with it the history of the transcripts sent and received. This interacts with the following components - Mempools, Preprocess, Daily Offchain Consensus, and on-chain validation.
+   
+**3.3. Variant Day Length and Committee Election** 
+
+BFT committee instances are switched after a fixed period of time (with the chain as a logical clock)[8]. A new committee is formed simply by the miners of the latest csize number of blocks inside SlowChain. In our consensus design, we want to exploit the intuition that, if the committee behaves well, we don’t have to force them to switch, and therefore the overhead of switching committees could be prevented in some situations. On the other hand, this will raise the difficulty for new nodes to get elected as committee members if the previous committee keeps good records. Therefore, we still keep the design of forcibly switching the committee every fixed amount of time, but with a much lower frequency, (for example, the committee will be switched every *K* days). On the other hand, we incorporate the idea of authenticated complaints from Thunderella[9] where the SlowChain can be used as evidence of misbehavior by BFT committee members. That is, whenever committee misbehavior is detected from the SlowChain, the next day's starting point (not necessarily the *K*-th day) will trigger a forced switch.
+   
+**3.4. Application-Specific Design** 
+
+Our consensus design is aware of application-specific requirements and tailors to them, under the conditions that the consistency, liveness, and security properties are not compromised. 
+
+**3.4.1. Physical Timing Restriction** 
+
+Conventional consensus design by default allows miners /committee members/leaders to re-order transactions within a small timing window. This raises a problem for some decentralized applications such as commercial exchanges where the trading fairness requires the timing order between transactions to be carefully preserved, or otherwise malicious (or, even normal rational) participants will have the incentive to re-order transactions, or even insert their own transactions, to gain extra profits. And this incentive will be magnified under high throughput. 
 
 What is even worse, is that such malicious re-ordering is impossible to distinguish because naturally network latency will cause re-ordering and such latencies can only be observed by the receiver itself therefore it has the final evidence of numbers regarding network latency. 
 
@@ -78,7 +96,7 @@ Result: A Boolean value that indicates whether the verification is passed
 
 **3** |    return false; 
 
-`   `|   // **if** the time skew is too large, reject TX.
+      // **if** the time skew is too large, reject TX.
 
 **4** var txn\_history = new static dictionary of lists;
 
@@ -90,17 +108,17 @@ Result: A Boolean value that indicates whether the verification is passed
 
 **8**  |   **if** txn\_history[TX.from][-1]. Tp - TX.T p > 0 then 
 
-**9**  |    |  return false; 
+**9**  |  |  return false; 
 
-`    `|  |   // To make sure the transactions from the same node preserve timing order.
+       // To make sure the transactions from the same node preserve timing order.
 
 **10**|   **else** 
 
-**11**|  |   txn\_history[TX.from].append(TX); **12**|  |    return true; ![](Aspose.Words.68fba5d9-5a64-44e9-9c18-4f838963b7da.003.png)
+**11**|  |   txn\_history[TX.from].append(TX); **12**|  |    return true; 
 
-FIGURE 1. Pseudo-Code for Extra Verification 
+**3.5. Computation and Data Sharding, and Speculative Transaction Execution** 
 
-**3.5. Computation and Data Sharding, and Speculative Transaction Execution.** In this subsection, we introduce our sharding scheme.
+In this subsection, we introduce our sharding scheme.
 
 An important modification over the original Hybrid Consensus is that we add computation and data-sharding support for it. And even more, first of its kind, we design a speculative transaction processing system over shards. The idea is clear, In Hybrid Consensus, the DailyBFT instances are indexed into a deterministic sequence DailyBFT [1 . . . R]. We allow multiple sequences of DailyBFT instances to exist at the same time. To be precise, we denote the *t*-th DailyBFT sequence by shard St. For simplicity, we fix the number of shards as *C*. Each DailyBFT is a normal shard. Besides *C* normal shards, we have a primary shard *Sp* composed of csize nodes.
 
@@ -126,9 +144,11 @@ There are still many optimization spaces. One certain con is that the confirmati
 
 **4. SMART CONTRACTS IN VIRTUAL MACHINES**
 
-**4.1. Design Rationale.** Since ours is a hybrid model, we’ll take the liberty of exploring this design space a little bit further. Let us consider the possibility of a hybrid cloud ecosystem. 
+**4.1. Design Rationale** 
 
-   A basic problem people have faced is the kind of crude mathematical notations followed in Ethereum’s Yellow Paper12. We therefore hope to follow something like KEVM Jello Paper13 to list out the EVM and AVM (described in 4.2) specifications.  
+Since ours is a hybrid model, we’ll take the liberty of exploring this design space a little bit further. Let us consider the possibility of a hybrid cloud ecosystem. 
+
+A basic problem people have faced is the kind of crude mathematical notations followed in Ethereum’s yellow paper[12]. We therefore hope to follow something like KEVM Jello Paper[13] to list out the EVM and AVM (described in 4.2) specifications.  
 
 **4.1.1.** *What about containers instead of VMs?* One of the blockchain frameworks out there that come as close to this idea as possible, is Hyperledger’s Fabric framework14. If one sets out to convert Fabric’s permissioned nature into permissionless, one of the foremost challenges would be to solve the chaincode issue. What this means is while it is possible to keep a chaincode/smart contract in a single container, it is not a scalable model for a public chain. Having such a model for public chain means having to run several thousand containers, per se, several thousand smart contracts on a single node (because each node maintains a copy). 
 
@@ -274,11 +294,11 @@ Now let us expand a bit on the container scenario. Given the above crisis, a pos
 
 on the max concurrent requests. This severely limits the Transactions Per Second from the consensus, by design. Engineering should not be a bottleneck to what could be achievable alternatively. Therefore, we choose to stick to EVM design, although a bit modified for our purpose. 
 
-2. **ABEY Chain Virtual Machine (AVM**). A typical example in this space would be that of the Ethereum Virtual Machine (EVM)20, which tries to follow total determinism, is completely optimized and is as simple as it gets, to make incentivization a simple step to calculate. It also supports various features like off-stack storage of memory, contract delegation and invocation value storage.  
+2. **Abey Chain Virtual Machine (AVM**). A typical example in this space would be that of the Ethereum Virtual Machine (EVM)20, which tries to follow total determinism, is completely optimized and is as simple as it gets, to make incentivization a simple step to calculate. It also supports various features like off-stack storage of memory, contract delegation and invocation value storage.  
 
    We would reuse the EVM specifications for the SnailChain, but add a new specification for AVM in the next version of this Yellow Paper, after careful consideration of the design rationale similar to EVM, deriving the stack-based architecture utilizing the Keccak-256 hashing technique and the Elliptic-curve cryptography (ECC) approach. 
 
-The ABEYCHAIN infrastructure will utilize a combination of EVM and another EVM-like bytecode execution platform for launching smart contracts. We choose to use one VM for PBFT, embedded within each full node, so they could manage invocation calls on per-need basis. 
+The AbeyCHAIN infrastructure will utilize a combination of EVM and another EVM-like bytecode execution platform for launching smart contracts. We choose to use one VM for PBFT, embedded within each full node, so they could manage invocation calls on per-need basis. 
 
 The AVM backs the DailyBFT powered chains, which interact with the following components: 
 
@@ -292,13 +312,13 @@ The AVM backs the DailyBFT powered chains, which interact with the following com
 5. **BLOCKS, STATE, AND TRANSACTIONS**
 1. **Block and committee signatures** 
 
-The block of ABEY 3.0 Chain , which mainly contains the transactions and smart contracts, is generated by the PoS committee when they reach a consensus. Similar to Ethereum block, fast block provides TxHash, Root, ReceiptHash for other non-members to verify transactions included at fast block body. Different from Ethereum block, the block of ABEY Chain includes the committee information and signs from validators. 
+The block of Abey 3.0 Chain , which mainly contains the transactions and smart contracts, is generated by the PoS committee when they reach a consensus. Similar to Ethereum block, fast block provides TxHash, Root, ReceiptHash for other non-members to verify transactions included at fast block body. Different from Ethereum block, the block of Abey Chain includes the committee information and signs from validators. 
 
 The commitInfo field includes all the committee members, it presents at the first block of every epoch. 
 
 The signs filed includes the parent block signatures and this block signatures from validators, but only the parent block signatures will be calculated as SignHash in block header. 
 
-2. **Parallel transaction execution** As of today, the multi-core processor architecture has become a major trend in the industry, as parallelization technology can fully utilize the potential of CPUs. ABEYCHAIN’s Parallelizing Transaction Execution mechanism uses the advantages of multi-core processors to the fullest by enabling transactions in blocks to be executed in parallel as much as possible.
+2. **Parallel transaction execution** As of today, the multi-core processor architecture has become a major trend in the industry, as parallelization technology can fully utilize the potential of CPUs. AbeyCHAIN’s Parallelizing Transaction Execution mechanism uses the advantages of multi-core processors to the fullest by enabling transactions in blocks to be executed in parallel as much as possible.
 
    The traditional transaction execution mechanism works mostly as such: transactions are read one by one from the block.  After each transaction is executed, the state machine will move to the next state until all transactions are executed sequentially.
 
@@ -332,8 +352,8 @@ The following subsections will be talking about each component of the incentive 
 
 **6.1. Gas fee and sharding**. Gas price is traded in a futures market, where the futures contract is manifested by a smart contract. Specifically, the contract will be executed as follows. 
 
-- Party A agree to pay party B *xxx* ABEY, while party B promises to execute party A’s smart contract, between time *T0* and *T1*, that cost exactly 1 gas to run.
-- Party B will contribute *xxx* ABEY to a pool corresponding to the committee C that executed party A’s smart contract. This is called the gas pool.
+- Party A agree to pay party B *xxx* Abey, while party B promises to execute party A’s smart contract, between time *T0* and *T1*, that cost exactly 1 gas to run.
+- Party B will contribute *xxx* Abey to a pool corresponding to the committee C that executed party A’s smart contract. This is called the gas pool.
 - Members of C will receive an equal share of the pool and return an average cost per gas µ for the pool.
 - If B contributed less than µ, she must make up for the difference by paying another party who contributed more than µ. If B contributed more than µ, she will receive the difference from another party.
 
@@ -355,7 +375,7 @@ Depending on the kinds of transactions and whether we’d need decentralized sto
 
 7. **FUTURE DIRECTION**
 
-Even after optimizations to the original ABEY 3.0 PoS Consensus, we acknowledge various optimizations possible on top of what was proposed in this paper. There are following possibilities: 
+Even after optimizations to the original Abey 3.0 PoS Consensus, we acknowledge various optimizations possible on top of what was proposed in this paper. There are following possibilities: 
 
 - Improving timestamp synchronization for all nodes, with no dependency on centralized NTP servers.
 - Detailed incentivization techniques for compensation infrastructure, so heavy infrastructure investors don’t suffer from ’left-out’, ’at a loss’ problem
@@ -365,11 +385,11 @@ Even after optimizations to the original ABEY 3.0 PoS Consensus, we acknowledge 
 - Sections for Virtual Machine Specification, Binary Data Encoding Method, Signing Transactions, Fee schedule and Ethash alternative.
 8. **CONCLUSIONS**
 
-We have formally defined ABEY 3.0 PoS Consensus protocol and its implementation along with plausible speculations in the original proposal. In this draft, we have introduced various new concepts some of which we will detail in the next version very soon.  
+We have formally defined Abey 3.0 PoS Consensus protocol and its implementation along with plausible speculations in the original proposal. In this draft, we have introduced various new concepts some of which we will detail in the next version very soon.  
 
 - The PoS committee is a rotating one, preventing corruption in a timely manner
 - The PoS committee is responsible for transaction validation, and staking is responsible for choosing/electing the committee members according to some rules we’ve derived and re-defined.
-- The new VM (which we call ABEY Chain Virtual Machine - AVM), we’ve surmised, could be inspired from the EVM, but with different block states and transaction execution flows, transaction parallel processing will be adopted.
+- The new VM (which we call Abey Chain Virtual Machine - AVM), we’ve surmised, could be inspired from the EVM, but with different block states and transaction execution flows, transaction parallel processing will be adopted.
 - The incentivization model needs to be re-worked such that it is based on of AVM.
 - We would eventually support sharding for the PoS committee nodes, for scalability.
 - We address the storage issue for high TPS public chains and introduced a method that seamlessly merge transaction process with decentralized data storage.
